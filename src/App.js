@@ -6,32 +6,54 @@ function DateTime(props) {
   )
 }
 
+function DateTimePretty(DateTimeComponent) {
+  const DateTimePrettified = (props) => {
+    const date = new Date(props.date.replace(' ', 'T'));
+    const now = new Date();
+    let displayDate;
+
+    const hourMs = 60 * 60 * 1000;
+    const dayMs = 24 * hourMs;
+
+    if (now - date > 30 * dayMs) displayDate = props.date;
+    if (now - date > dayMs && now - date < 30 * dayMs) displayDate = `${Math.ceil((now - date) / dayMs)} дней назад`;
+    if (now - date < dayMs) displayDate = `${Math.ceil((now - date) / hourMs)} часов назад`;
+    if (now - date < hourMs) displayDate = `${Math.ceil((now - date) / 60 * 1000)} минут назад`;
+
+    return <DateTime date={displayDate} />
+  }
+
+  return DateTimePrettified;
+}
+
+const DateTimePrettified = DateTimePretty(DateTime);
+
 function Video(props) {
   return (
     <div className="video">
-      <iframe src={props.url} frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-      <DateTime date={props.date} />
+      <iframe src={props.url} frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen title={props.url}></iframe>
+      <DateTimePrettified date={props.date} />
     </div>
   )
 }
 
 function VideoList(props) {
-  return props.list.map(item => <Video url={item.url} date={item.date} />);
+  return props.list.map(item => <Video url={item.url} date={item.date} key={item.url} />);
 }
 
 export default function App() {
-  const [list, setList] = useState([
+  const [list] = useState([
     {
       url: 'https://www.youtube.com/embed/rN6nlNC9WQA?rel=0&amp;controls=0&amp;showinfo=0',
-      date: '2017-07-31 13:24:00'
+      date: '2021-03-03 22:22:00'
     },
     {
       url: 'https://www.youtube.com/embed/dVkK36KOcqs?rel=0&amp;controls=0&amp;showinfo=0',
-      date: '2018-03-03 12:10:00'
+      date: '2021-03-02 00:10:00'
     },
     {
       url: 'https://www.youtube.com/embed/xGRjCa49C6U?rel=0&amp;controls=0&amp;showinfo=0',
-      date: '2018-02-03 23:16:00'
+      date: '2021-02-12 23:16:00'
     },
     {
       url: 'https://www.youtube.com/embed/RK1K2bCg4J8?rel=0&amp;controls=0&amp;showinfo=0',
